@@ -1,6 +1,6 @@
 name: WkNetic-Bridge
 version: '1.0-SNAPSHOT'
-main: cn.wekyjay.wknetic.spigot.wkNeticBridge.WkNeticBridge
-api-version: '1.21'
-prefix: WkSMP
+main: cn.wekyjay.wknetic.bridge.WkNeticBridge
+api-version: '1.13'
+prefix: WkNB
 authors: [ WekyJay ]

@@ -1,0 +1,4 @@
+backend:
+  ip: "127.0.0.1"
+  port: 8081      # 注意：这是 Netty 端口，不是 Web 8080 端口
+  token: "你的Token" # 可以通过指令 /wk link 获取
