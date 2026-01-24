@@ -46,7 +46,6 @@
                                 </relocation>
                             </relocations>
                         </configuration>
-
                     </execution>
                 </executions>
             </plugin>

@@ -3,6 +3,7 @@ package cn.wekyjay.wknetic.bridge;
 import cn.wekyjay.wknetic.auth.LoginAuthManager;
 import cn.wekyjay.wknetic.auth.PremiumAuthManager;
 import cn.wekyjay.wknetic.auth.listener.AuthListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WkNeticBridge extends JavaPlugin {
@@ -14,13 +15,14 @@ public final class WkNeticBridge extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         // 初始化认证管理器
         this.premiumAuthManager = new PremiumAuthManager();
         this.loginAuthManager = new LoginAuthManager();
 
         // 注册认证监听器
         getServer().getPluginManager().registerEvents(new AuthListener(this), this);
+        // 注册全局聊天监听器
+        getServer().getPluginManager().registerEvents(new PLayerChatListener(this),this);
 
         // 1. 初始化配置
         saveDefaultConfig();
