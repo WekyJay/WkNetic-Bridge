@@ -2,8 +2,9 @@ package cn.wekyjay.wknetic.bridge;
 
 import cn.wekyjay.wknetic.auth.LoginAuthManager;
 import cn.wekyjay.wknetic.auth.PremiumAuthManager;
+import cn.wekyjay.wknetic.auth.hook.LoginHooker;
 import cn.wekyjay.wknetic.auth.listener.AuthListener;
-import org.bukkit.Bukkit;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WkNeticBridge extends JavaPlugin {
@@ -15,6 +16,9 @@ public final class WkNeticBridge extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        new LoginHooker();
+
         // 初始化认证管理器
         this.premiumAuthManager = new PremiumAuthManager();
         this.loginAuthManager = new LoginAuthManager();

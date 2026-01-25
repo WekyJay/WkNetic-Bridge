@@ -3,6 +3,7 @@ package cn.wekyjay.wknetic.auth.listener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -12,24 +13,27 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import cn.wekyjay.wknetic.auth.PremiumAuthManager;
 import cn.wekyjay.wknetic.bridge.WkNeticBridge;
 
 public class AuthListener implements Listener {
     private final WkNeticBridge plugin;
-    private final Set<UUID> unauthenticatedPlayers = new HashSet<>();
+    private final static Set<UUID> unauthenticatedPlayers = new HashSet<>();
 
     public AuthListener(WkNeticBridge plugin) {
         this.plugin = plugin;
     }
 
-    // --- 玩家加入事件 ---
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        // 禁止玩家任何操作
-        event.setJoinMessage(null); // 取消默认加入消息
-
-        handlePlayerJoin(event.getPlayer());
+    public static Set<UUID> getUnauthenticatedPlayers() {
+        return unauthenticatedPlayers;
     }
+
+    // // --- 玩家加入事件 ---
+    // @EventHandler(priority = EventPriority.HIGHEST)
+    // public void onPlayerJoin(PlayerJoinEvent event) {
+    //     handlePlayerJoin(event.getPlayer());
+    // }
 
 
 
@@ -55,7 +59,8 @@ public class AuthListener implements Listener {
         if (plugin.getLoginAuthManager().hasLoginHook()) {
             String hookName = plugin.getLoginAuthManager().getLoginHookName();
             if ("AuthMe".equals(hookName)) {
-                // 等待 AuthMe 登录事件
+                // 等待 AuthMe 登录事件,注册 AuthmeListener
+                plugin.getServer().getPluginManager().registerEvents(new AuthmeListener(), plugin);
             } else if ("CustomLogin".equals(hookName)) {
                 // TODO: 实现自己的登录验证逻辑，例如提示玩家输入密码
                 player.sendMessage("§e[WkNetic] 请在聊天框输入密码进行登录。");
@@ -64,14 +69,6 @@ public class AuthListener implements Listener {
         }
     }
 
-    // --- AuthMe 登录事件 ---
-    @EventHandler
-    public void onAuthMeLogin(fr.xephi.authme.events.LoginEvent event) {
-        Player player = event.getPlayer();
-        // 从未登录列表中移除
-        unauthenticatedPlayers.remove(player.getUniqueId());
-        syncToCommunity(player, player.getUniqueId(), "CRACKED");
-    }
 
     // --- 防止未登录玩家移动 ---
     @EventHandler
@@ -79,7 +76,7 @@ public class AuthListener implements Listener {
         Player player = event.getPlayer();
         if (unauthenticatedPlayers.contains(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage("§c[WkNetic] 请先完成登录验证！");
+            // player.sendMessage("§c[WkNetic] 请先完成登录验证！");
         }
     }
 
@@ -98,7 +95,11 @@ public class AuthListener implements Listener {
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
         if (unauthenticatedPlayers.contains(player.getUniqueId())) {
-            event.setCancelled(true);
+            if (event.getMessage().startsWith("/login") || event.getMessage().startsWith("/register")) {
+                // 允许 /login 和 /register 命令通过
+                return;
+            }
+            // event.setCancelled(true);
             player.sendMessage("§c[WkNetic] 请先完成登录验证！");
         }
     }

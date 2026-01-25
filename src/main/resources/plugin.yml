@@ -4,3 +4,4 @@ main: cn.wekyjay.wknetic.bridge.WkNeticBridge
 api-version: '1.13'
 prefix: WkNB
 authors: [ WekyJay ]
+softdepend: [ FastLogin, AuthMe ]

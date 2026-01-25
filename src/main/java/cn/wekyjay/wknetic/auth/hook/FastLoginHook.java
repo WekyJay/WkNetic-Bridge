@@ -1,6 +1,8 @@
 package cn.wekyjay.wknetic.auth.hook;
 
-public class FastLoginHook implements ILoginHook {
+public class FastLoginHook extends LoginHook {
+
+
     @Override
     public boolean isHooked() {
         try {
@@ -14,6 +16,12 @@ public class FastLoginHook implements ILoginHook {
     @Override
     public String getHookName() {
         return "FastLogin";
+    }
+
+    @Override
+    public boolean registerEvents() {
+        // FastLogin 不需要额外注册事件
+        return true;
     }
 
 }

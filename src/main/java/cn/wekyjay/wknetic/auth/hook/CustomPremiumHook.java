@@ -2,16 +2,21 @@ package cn.wekyjay.wknetic.auth.hook;
 
 import org.bukkit.entity.Player;
 
-public class CustomPremiumHook implements ILoginHook {
+public class CustomPremiumHook extends LoginHook {
     @Override
     public boolean isHooked() {
-        // 当 FastLogin 未安装时使用
         return true;
     }
 
     @Override
     public String getHookName() {
         return "CustomPremium";
+    }
+
+    @Override
+    public boolean registerEvents() {
+        // CustomPremium 不需要额外注册事件
+        return true;
     }
 
     // 检查玩家是否为正版

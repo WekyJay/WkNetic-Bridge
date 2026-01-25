@@ -1,14 +1,12 @@
 package cn.wekyjay.wknetic.auth.hook;
 
+
 import org.bukkit.Bukkit;
 
-public class AuthmeHook implements ILoginHook {
+import cn.wekyjay.wknetic.auth.listener.AuthmeListener;
+import cn.wekyjay.wknetic.bridge.WkNeticBridge;
 
-    public AuthmeHook() {
-        if (isHooked()) {
-            Bukkit.getLogger().info("AuthMe hook initialized.");
-        }
-    }
+public class AuthmeHook extends LoginHook {
 
     @Override
     public boolean isHooked() {
@@ -23,6 +21,18 @@ public class AuthmeHook implements ILoginHook {
     @Override
     public String getHookName() {
         return "AuthMe";
+    }
+
+    @Override
+    public boolean registerEvents() {
+        WkNeticBridge instance = WkNeticBridge.getInstance();
+
+        instance.getServer().getScheduler().runTaskAsynchronously(instance, () -> {
+            instance.getLogger().info("Registering AuthMe events asynchronously.");
+            Bukkit.getServer().getPluginManager().registerEvents(new AuthmeListener(), instance);
+            instance.getLogger().info("AuthMe events registered.");
+        });
+        return true;
     }
 
 }

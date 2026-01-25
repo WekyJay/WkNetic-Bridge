@@ -4,30 +4,30 @@ import cn.wekyjay.wknetic.auth.hook.AuthmeHook;
 import cn.wekyjay.wknetic.auth.hook.CustomLoginHook;
 import cn.wekyjay.wknetic.auth.hook.FastLoginHook;
 import cn.wekyjay.wknetic.auth.hook.ILoginHook;
+import cn.wekyjay.wknetic.auth.hook.LoginHooker;
+
 import org.bukkit.Bukkit;
+import cn.wekyjay.wknetic.bridge.WkNeticBridge;
 
 public class LoginAuthManager {
     private final ILoginHook loginHook;
 
     public LoginAuthManager() {
+
         if (Bukkit.getServer().getOnlineMode()) {
             loginHook = null; // 正版模式，不需要登录验证
-            System.out.println("Server is in online-mode, no login verification needed.");
+            WkNeticBridge.getInstance().getLogger().info("Server is in online-mode, no login verification needed.");
         } else {
-            FastLoginHook fastLoginHook = new FastLoginHook();
-            if (fastLoginHook.isHooked()) {
-                loginHook = fastLoginHook;
-                System.out.println("Using FastLogin for login verification.");
+            AuthmeHook authmeHook = (AuthmeHook)LoginHooker.getHookByName("AuthMe");
+            if (authmeHook != null && authmeHook.isHooked()) {
+                loginHook = authmeHook;
+                authmeHook.registerEvents();
+                WkNeticBridge.getInstance().getLogger().info("[加入监听器]AuthMe hook detected and events registered.");
             } else {
-                AuthmeHook authmeHook = new AuthmeHook();
-                if (authmeHook.isHooked()) {
-                    loginHook = authmeHook;
-                    System.out.println("Using AuthMe for login verification.");
-                } else {
-                    loginHook = new CustomLoginHook();
-                    System.out.println("Using CustomLogin for login verification.");
-                }
+                loginHook = new CustomLoginHook();
+                WkNeticBridge.getInstance().getLogger().info("Using CustomLogin for login verification.");
             }
+            
         }
     }
 
