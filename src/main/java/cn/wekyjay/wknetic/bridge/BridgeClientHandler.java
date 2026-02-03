@@ -42,10 +42,16 @@ public class BridgeClientHandler extends SimpleChannelInboundHandler<String> {
     }
 
 
+    /**
+     * 处理具体的消息类型
+     * @param type
+     * @param json
+     */
     private void processMessage(String type, JsonObject json) {
-        if ("COMMAND".equals(type)) {
+        plugin.getLogger().info("Received command from backend: " + type);
+        if ("214".equals(type)) {
             // 执行控制台指令
-            String cmd = json.get("cmd").getAsString();
+            String cmd = json.get("command").getAsString();
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
         } 
         else if ("GIVE_ITEM".equals(type)) {

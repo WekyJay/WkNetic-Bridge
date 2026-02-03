@@ -251,11 +251,9 @@ public class NetworkManager {
             JsonObject obj = new JsonObject();
             obj.addProperty("name", player.getName());
             obj.addProperty("uuid", player.getUniqueId().toString());
-            try {
-                obj.addProperty("ping", player.getPing());
-            } catch (Exception ignored) {
-                // 某些服务端不支持 getPing
-            }
+            obj.addProperty("world", player.getWorld().getName());
+            try { obj.addProperty("gameMode", player.getGameMode().name()); } catch (Exception ignored) {};
+            try { obj.addProperty("ping", player.getPing()); } catch (Exception ignored) {};
             array.add(obj);
         }
         return array;
@@ -270,6 +268,8 @@ public class NetworkManager {
             JsonObject obj = new JsonObject();
             obj.addProperty("name", p.getName());
             obj.addProperty("version", p.getDescription().getVersion());
+            obj.addProperty("author", String.join(", ", p.getDescription().getAuthors()));
+            obj.addProperty("description", p.getDescription().getDescription());
             obj.addProperty("enabled", p.isEnabled());
             array.add(obj);
         }
