@@ -117,6 +117,8 @@ Common:
 玩家加入 → 检测正版 → 同步 PREMIUM → 允许游戏
 ```
 
+**离线服务器**
+```
 玩家加入 → 限制行为 → 等待认证
               ↓
         认证插件验证 (AuthMe/FastLogin)
@@ -243,60 +245,11 @@ Token 由后端服务生成，可通过以下方式获取：
 插件本身占用内存极小（<10MB），主要取决于玩家数量和网络通信频率。
 </details>
 
-## 📝 更新日志
+<details>
+<summary><b>Q: 玩家无法移动/聊天？</b></summary>
 
-### v1.0-SNAPSHOT (开发中)
-- ✅ 实现基础认证系统
-- ✅ 支持 AuthMe、FastLogin 集成
-- ✅ 完成 Netty 网络通信
-- ✅ 玩家状态实时同步
-- 🔄 自定义认证模式完善中
-
-## 🤝 贡献指南
-
-欢迎贡献代码！请遵循以下流程：
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
-
-**代码规范：**
-- 遵循 Google Java Style Guide
-- 编写单元测试
-- 添加必要的注释
-- 更新相关文档
-
-## 📄 开源协议
-
-本项目采用 [MIT License](LICENSE) 开源协议。
-
-## 🔗 相关链接
-
-- 📖 [完整文档](https://github.com/your-repo/WkNetic-Bridge/wiki)
-- 🐛 [问题反馈](https://github.com/your-repo/WkNetic-Bridge/issues)
-- 💬 [讨论区](https://github.com/your-repo/WkNetic-Bridge/discussions)
-- 📧 联系我们: wekyjay@icloud.com
-
-## ⭐ Star History
-
-如果这个项目对你有帮助，请给我们一个 Star ⭐
-
-[![Star History Chart](https://api.star-history.com/svg?repos=your-repo/WkNetic-Bridge&type=Date)](https://star-history.com/#your-repo/WkNetic-Bridge&Date)
-
----
-
-<div align="center">
-
-**[⬆ 返回顶部](#wknetic-bridge)**
-
-Made with ❤️ by WkNetic Team
-
-</div>
-
-### Q: 玩家无法移动/聊天？
-A: 这是正常行为，未登录玩家会被限制操作。登录后自动恢复。
+这是正常行为，未登录玩家会被限制操作。登录后自动恢复。
+</details>
 
 <details>
 <summary><b>Q: 如何添加新的认证插件？</b></summary>
@@ -344,7 +297,7 @@ A: 这是正常行为，未登录玩家会被限制操作。登录后自动恢�
 - 📖 [完整文档](https://github.com/your-repo/WkNetic-Bridge/wiki)
 - 🐛 [问题反馈](https://github.com/your-repo/WkNetic-Bridge/issues)
 - 💬 [讨论区](https://github.com/your-repo/WkNetic-Bridge/discussions)
-- 📧 联系我们: support@wknetic.com
+- 📧 联系我们: wekyjay@icloud.com
 
 ## 🙏 致谢
 
