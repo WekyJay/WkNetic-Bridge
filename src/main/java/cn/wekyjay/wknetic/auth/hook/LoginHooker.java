@@ -11,27 +11,26 @@ public class LoginHooker {
         return registeredHooks;
     }
 
-    static {
-        // 初始化并注册所有已知的登录钩子
-        new FastLoginHook();
-        new AuthmeHook();
-        new CustomLoginHook();
-        new CustomPremiumHook();
+
+    public static void registerHook(ILoginHook hook) {
+        if (hook != null && hook.isHooked()) {
+            registeredHooks.put(hook.getHookName(), hook);
+        }
     }
-
-
-
 
     public static ILoginHook getHookByName(String name) {
         return registeredHooks.getOrDefault(name, null);
     }
 
 
-
     public LoginHooker() {
+        // 显式注册所有已知的登录钩子
+        registerHook(new FastLoginHook());
+        registerHook(new AuthmeHook());
+        registerHook(new CustomLoginHook());
+        registerHook(new CustomPremiumHook());
         // 遍历已注册的钩子并注册事件
         for (ILoginHook hook : registeredHooks.values()) {
-            // 已注册的钩子
             WkNeticBridge.getInstance().getLogger().info("Registering events for hook: " + hook.getHookName());
         }
     }

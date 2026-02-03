@@ -29,14 +29,6 @@ public class AuthListener implements Listener {
         return unauthenticatedPlayers;
     }
 
-    // // --- 玩家加入事件 ---
-    // @EventHandler(priority = EventPriority.HIGHEST)
-    // public void onPlayerJoin(PlayerJoinEvent event) {
-    //     handlePlayerJoin(event.getPlayer());
-    // }
-
-
-
     /**
      * 处理玩家加入逻辑
      * @param player

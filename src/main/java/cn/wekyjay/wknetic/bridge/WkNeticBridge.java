@@ -6,12 +6,14 @@ import cn.wekyjay.wknetic.auth.hook.LoginHooker;
 import cn.wekyjay.wknetic.auth.listener.AuthListener;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public final class WkNeticBridge extends JavaPlugin {
     private static WkNeticBridge instance;
     private NetworkManager networkManager;
     private PremiumAuthManager premiumAuthManager;
     private LoginAuthManager loginAuthManager;
+    private BukkitTask serverInfoTask;
 
     @Override
     public void onEnable() {
@@ -36,6 +38,13 @@ public final class WkNeticBridge extends JavaPlugin {
         getServer().getScheduler().runTaskLater(this, () -> {
             this.networkManager = new NetworkManager(this);
             this.networkManager.connect();
+
+            long intervalTicks = 20L * 10; // 10 秒
+            this.serverInfoTask = getServer().getScheduler().runTaskTimer(this, () -> {
+                if (this.networkManager != null && this.networkManager.isConnected()) {
+                    this.networkManager.sendServerInfo();
+                }
+            }, intervalTicks, intervalTicks);
         }, 20L);
 
         getLogger().info("WkNeticBridge 已启动 (Package: cn.wekyjay.wknetic.bridge)");
@@ -43,6 +52,10 @@ public final class WkNeticBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.serverInfoTask != null) {
+            this.serverInfoTask.cancel();
+            this.serverInfoTask = null;
+        }
         if (this.networkManager != null) {
             this.networkManager.disconnect();
         }

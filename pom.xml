@@ -18,8 +18,6 @@
 
     <build>
         <defaultGoal>clean package</defaultGoal>
-        <!-- 输出到自定义目录以避免与原始 POM 冲突 -->
-         <directory>/Users/macbook/文件/Studio/MineCraftPlugins/TestServer/Paper-1.21.4/plugins</directory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
