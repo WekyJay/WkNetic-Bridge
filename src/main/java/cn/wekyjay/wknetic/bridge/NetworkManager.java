@@ -14,6 +14,8 @@ import org.bukkit.Bukkit;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import cn.wekyjay.wknetic.api.enums.PacketType;
+
 import java.nio.charset.StandardCharsets;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -121,7 +123,7 @@ public class NetworkManager {
      */
     private void sendLogin() {
         JsonObject json = new JsonObject();
-        json.addProperty("type", 210);  // 类型 210 = 游戏服务器登录
+        json.addProperty("type", PacketType.SERVER_LOGIN.toString());  // 类型 210 = 游戏服务器登录
         json.addProperty("token", token);
         json.addProperty("serverName", serverName);
         json.addProperty("serverVersion", serverVersion);
@@ -135,7 +137,7 @@ public class NetworkManager {
     public void sendHeartbeat() {
         try {
             JsonObject json = new JsonObject();
-            json.addProperty("type", 0);
+            json.addProperty("type", PacketType.HEARTBEAT.toString());
             json.addProperty("token", token);
 
             if (channel != null && channel.isActive()) {
@@ -152,7 +154,7 @@ public class NetworkManager {
     public void sendServerInfo() {
     try {
         JsonObject json = new JsonObject();
-        json.addProperty("type", 213);
+        json.addProperty("type", PacketType.SERVER_INFO.toString());
         json.addProperty("token", token);
         json.addProperty("serverName", serverName);
         json.addProperty("serverVersion", serverVersion);

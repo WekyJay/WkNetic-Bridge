@@ -39,6 +39,22 @@
                         <phase>package</phase>
                         <goals><goal>shade</goal></goals>
                         <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <archive>
+                                <compress>true</compress>
+                                <recompressAddedJars>true</recompressAddedJars>
+                            </archive>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <!-- 排除签名文件 -->
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <relocations>
                                 <relocation>
                                     <pattern>com.cryptomorin.xseries</pattern>
@@ -75,6 +91,11 @@
             <artifactId>spigot-api</artifactId>
             <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.wekyjay.wknetic</groupId>
+            <artifactId>wknetic-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <!--  lombok  -->
         <dependency>
