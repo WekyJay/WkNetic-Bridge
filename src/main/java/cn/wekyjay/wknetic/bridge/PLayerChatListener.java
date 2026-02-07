@@ -2,6 +2,9 @@ package cn.wekyjay.wknetic.bridge;
 
 
 import com.google.gson.JsonObject;
+
+import cn.wekyjay.wknetic.api.enums.PacketType;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,7 +27,7 @@ public class PLayerChatListener implements Listener {
 
         // 1. 构造 JSON
         JsonObject json = new JsonObject();
-        json.addProperty("type", 3); // 类型 3 = 聊天
+        json.addProperty("type", PacketType.CHAT_MSG.toString()); // 类型 3 = 聊天
         json.addProperty("player", e.getPlayer().getName());
         json.addProperty("msg", e.getMessage());
         json.addProperty("server", plugin.getConfig().getString("Common.server-name", Bukkit.getServer().getName() + "-" + Bukkit.getServer().getVersion()));

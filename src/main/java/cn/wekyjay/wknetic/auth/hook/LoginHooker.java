@@ -3,7 +3,7 @@ package cn.wekyjay.wknetic.auth.hook;
 import java.util.HashMap;
 import cn.wekyjay.wknetic.bridge.WkNeticBridge;
 
-
+/** 聚合登录钩子，负责管理和注册所有登录钩子 */
 public class LoginHooker {
     private final static HashMap<String, ILoginHook> registeredHooks = new HashMap<>();
 

@@ -25,7 +25,8 @@ public class PremiumAuthManager {
             if (fastLoginHook != null && fastLoginHook.isHooked()) {
                 premiumHook = fastLoginHook;
                 WkNeticBridge.getInstance().getLogger().info("Using FastLogin for premium check.");
-            } else { // 使用自定义的正版验证
+            } else { 
+                // 使用自定义的正版验证作为默认钩子
                 premiumHook = new CustomPremiumHook();
                 WkNeticBridge.getInstance().getLogger().info("Using CustomPremium for premium check.");
             }

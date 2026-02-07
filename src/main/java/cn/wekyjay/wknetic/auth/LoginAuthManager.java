@@ -2,7 +2,6 @@ package cn.wekyjay.wknetic.auth;
 
 import cn.wekyjay.wknetic.auth.hook.AuthmeHook;
 import cn.wekyjay.wknetic.auth.hook.CustomLoginHook;
-import cn.wekyjay.wknetic.auth.hook.FastLoginHook;
 import cn.wekyjay.wknetic.auth.hook.ILoginHook;
 import cn.wekyjay.wknetic.auth.hook.LoginHooker;
 
@@ -21,9 +20,10 @@ public class LoginAuthManager {
             AuthmeHook authmeHook = (AuthmeHook)LoginHooker.getHookByName("AuthMe");
             if (authmeHook != null && authmeHook.isHooked()) {
                 loginHook = authmeHook;
-                authmeHook.registerEvents();
+                authmeHook.registerEvents(); // 注册 AuthMe 事件
                 WkNeticBridge.getInstance().getLogger().info("[加入监听器]AuthMe hook detected and events registered.");
             } else {
+                // 使用 CustomLogin 作为默认的离线登录验证钩子
                 loginHook = new CustomLoginHook();
                 WkNeticBridge.getInstance().getLogger().info("Using CustomLogin for login verification.");
             }

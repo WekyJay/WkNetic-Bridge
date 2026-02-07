@@ -3,9 +3,7 @@ package cn.wekyjay.wknetic.auth.listener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -14,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import cn.wekyjay.wknetic.auth.PremiumAuthManager;
 import cn.wekyjay.wknetic.bridge.WkNeticBridge;
 
 public class AuthListener implements Listener {

@@ -4,6 +4,7 @@ import cn.wekyjay.wknetic.auth.LoginAuthManager;
 import cn.wekyjay.wknetic.auth.PremiumAuthManager;
 import cn.wekyjay.wknetic.auth.hook.LoginHooker;
 import cn.wekyjay.wknetic.auth.listener.AuthListener;
+import cn.wekyjay.wknetic.bridge.log.ConsoleAppenderManager;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,11 +16,21 @@ public final class WkNeticBridge extends JavaPlugin {
     private LoginAuthManager loginAuthManager;
     private BukkitTask serverInfoTask;
 
+  
+
     @Override
     public void onEnable() {
         instance = this;
 
         new LoginHooker();
+
+
+        // 注册自定义控制台日志 Appender
+        ConsoleAppenderManager.getInstance().setPlugin(this);
+        ConsoleAppenderManager.getInstance().register();
+
+        // 初始化配置
+        saveDefaultConfig();
 
         // 初始化认证管理器
         this.premiumAuthManager = new PremiumAuthManager();
@@ -30,8 +41,7 @@ public final class WkNeticBridge extends JavaPlugin {
         // 注册全局聊天监听器
         getServer().getPluginManager().registerEvents(new PLayerChatListener(this),this);
 
-        // 1. 初始化配置
-        saveDefaultConfig();
+
 
         // 2. 启动网络连接
         // 放在 runTaskLater 稍微延迟一点启动，防止服务器刚开还没完全就绪
@@ -52,13 +62,20 @@ public final class WkNeticBridge extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // 停止服务器信息任务
         if (this.serverInfoTask != null) {
             this.serverInfoTask.cancel();
             this.serverInfoTask = null;
         }
+        // 断开网络连接
         if (this.networkManager != null) {
             this.networkManager.disconnect();
         }
+
+        // 注销自定义控制台日志 Appender
+        ConsoleAppenderManager.getInstance().unregister();
+
+
     }
 
     public static WkNeticBridge getInstance() {
@@ -76,4 +93,6 @@ public final class WkNeticBridge extends JavaPlugin {
     public LoginAuthManager getLoginAuthManager() {
         return loginAuthManager;
     }
+
+
 }
