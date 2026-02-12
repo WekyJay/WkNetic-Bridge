@@ -1,9 +1,9 @@
 package cn.wekyjay.wknetic.bridge;
 
+import cn.wekyjay.wknetic.api.model.packet.PlayerChatPacket;
+import cn.wekyjay.wknetic.api.utils.PacketUtils;
 
-import com.google.gson.JsonObject;
-
-import cn.wekyjay.wknetic.api.enums.PacketType;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -11,6 +11,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
+
+import com.google.gson.Gson;
 
 public class PLayerChatListener implements Listener {
     private final Plugin plugin;
@@ -25,18 +27,24 @@ public class PLayerChatListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
 
-        // 1. 构造 JSON
-        JsonObject json = new JsonObject();
-        json.addProperty("type", PacketType.CHAT_MSG.toString()); // 类型 3 = 聊天
-        json.addProperty("player", e.getPlayer().getName());
-        json.addProperty("msg", e.getMessage());
-        json.addProperty("server", plugin.getConfig().getString("Common.server-name", Bukkit.getServer().getName() + "-" + Bukkit.getServer().getVersion()));
-        json.addProperty("uuid", e.getPlayer().getUniqueId().toString());
-        json.addProperty("world", e.getPlayer().getWorld().getName());
-        json.addProperty("time", System.currentTimeMillis());
+        PlayerChatPacket packet = new PlayerChatPacket();
+    
+        packet.setPlayer(e.getPlayer().getName());
+        packet.setMsg(e.getMessage());
+        packet.setServerName(plugin.getConfig().getString("Common.server-name", Bukkit.getServer().getName() + "-" + Bukkit.getServer().getVersion()));
+        packet.setUuid(e.getPlayer().getUniqueId().toString());
+        packet.setWorld(e.getPlayer().getWorld().getName());
+        packet.setTime(System.currentTimeMillis());
+        
+        String json = "";
+        
+        Gson gson = new Gson();
+        json = gson.toJson(packet);
+    
+    
 
         // 2. 【异步发送】通过 Netty 发送
         // NetworkManager 内部是 channel.writeAndFlush，线程安全的
-        WkNeticBridge.getInstance().getNetworkManager().send(json.toString());
+        WkNeticBridge.getInstance().getNetworkManager().send(json);
     }
 }

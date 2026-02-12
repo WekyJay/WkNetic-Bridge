@@ -11,14 +11,20 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.bukkit.Bukkit;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import cn.wekyjay.wknetic.api.enums.PacketType;
+import cn.wekyjay.wknetic.api.model.dto.socket.PlayerInfoDto;
+import cn.wekyjay.wknetic.api.model.dto.socket.PluginInfoDto;
+import cn.wekyjay.wknetic.api.model.packet.HeartbeatPacket;
+import cn.wekyjay.wknetic.api.model.packet.ServerSessionPacket;
 
 import java.nio.charset.StandardCharsets;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -122,12 +128,14 @@ public class NetworkManager {
      * 发送登录认证数据
      */
     private void sendLogin() {
-        JsonObject json = new JsonObject();
-        json.addProperty("type", PacketType.SERVER_LOGIN.toString());  // 类型 210 = 游戏服务器登录
-        json.addProperty("token", token);
-        json.addProperty("serverName", serverName);
-        json.addProperty("serverVersion", serverVersion);
+        ServerSessionPacket packet = new ServerSessionPacket();
+        packet.setType(PacketType.SERVER_LOGIN);
+        packet.setToken(token);
+        packet.setServerName(serverName);
+        packet.setServerVersion(serverVersion);
 
+        Gson gson = new Gson();
+        JsonObject json = gson.toJsonTree(packet).getAsJsonObject();
         send(json.toString());
     }
 
@@ -136,9 +144,11 @@ public class NetworkManager {
      */
     public void sendHeartbeat() {
         try {
-            JsonObject json = new JsonObject();
-            json.addProperty("type", PacketType.HEARTBEAT.toString());
-            json.addProperty("token", token);
+            HeartbeatPacket heartbeatPacket = new HeartbeatPacket();
+            heartbeatPacket.setToken(token);
+            
+            Gson gson = new Gson();
+            String json = gson.toJson(heartbeatPacket);
 
             if (channel != null && channel.isActive()) {
                 channel.writeAndFlush(json.toString());
@@ -153,19 +163,24 @@ public class NetworkManager {
      */
     public void sendServerInfo() {
     try {
-        JsonObject json = new JsonObject();
-        json.addProperty("type", PacketType.SERVER_INFO.toString());
-        json.addProperty("token", token);
-        json.addProperty("serverName", serverName);
-        json.addProperty("serverVersion", serverVersion);
-        json.addProperty("motd", Bukkit.getMotd());
-        json.addProperty("onlinePlayers", Bukkit.getOnlinePlayers().size());
-        json.addProperty("maxPlayers", Bukkit.getMaxPlayers());
-        json.addProperty("tps", getTps()); // 你自己的方法
-        json.addProperty("ramUsage", getUsedRam());
-        json.addProperty("maxRam", getMaxRam());
-        json.add("playerList", buildPlayerListJson());
-        json.add("pluginList", buildPluginListJson());
+        
+        ServerSessionPacket serverSessionPacket = new ServerSessionPacket();
+        serverSessionPacket.setType(PacketType.SERVER_INFO);
+        serverSessionPacket.setToken(token);
+        serverSessionPacket.setServerName(serverName);
+        serverSessionPacket.setServerVersion(serverVersion);
+        serverSessionPacket.setMotd(Bukkit.getMotd());
+        serverSessionPacket.setOnlinePlayers(Bukkit.getOnlinePlayers().size());
+        serverSessionPacket.setMaxPlayers(Bukkit.getMaxPlayers());
+        serverSessionPacket.setTps(getTps());
+        serverSessionPacket.setRamUsage(getUsedRam());
+        serverSessionPacket.setMaxRam(getMaxRam());
+        serverSessionPacket.setPlayerList(buildPlayerListJson());
+        serverSessionPacket.setPluginList(buildPluginListJson());
+        
+        // 转Json
+        Gson gson = new Gson();
+        JsonObject json = gson.toJsonTree(serverSessionPacket).getAsJsonObject();
 
         if (channel != null && channel.isActive()) {
             channel.writeAndFlush(json.toString());
@@ -243,20 +258,20 @@ public class NetworkManager {
     /**
      * 构建在线玩家列表 JSON
      */
-    private JsonArray buildPlayerListJson() {
-        JsonArray array = new JsonArray();
+    private List<PlayerInfoDto> buildPlayerListJson() {
+        List<PlayerInfoDto> array = new ArrayList<>();
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
         for (Player player : players) {
             if (player == null) {
                 continue;
             }
-            JsonObject obj = new JsonObject();
-            obj.addProperty("name", player.getName());
-            obj.addProperty("uuid", player.getUniqueId().toString());
-            obj.addProperty("world", player.getWorld().getName());
-            try { obj.addProperty("gameMode", player.getGameMode().name()); } catch (Exception ignored) {};
-            try { obj.addProperty("ping", player.getPing()); } catch (Exception ignored) {};
-            array.add(obj);
+            PlayerInfoDto dto = new PlayerInfoDto();
+            dto.setName(player.getName());
+            dto.setUuid(player.getUniqueId().toString());
+            dto.setWorld(player.getWorld().getName());
+            try { dto.setGameMode(player.getGameMode().name()); } catch (Exception ignored) {};
+            try { dto.setPing(player.getPing()); } catch (Exception ignored) {};
+            array.add(dto);
         }
         return array;
     }
@@ -264,15 +279,16 @@ public class NetworkManager {
     /**
      * 构建插件列表 JSON
      */
-    private JsonArray buildPluginListJson() {
-        JsonArray array = new JsonArray();
+    private List<PluginInfoDto> buildPluginListJson() {
+
+        List<PluginInfoDto> array = new ArrayList<>();
         for (Plugin p : Bukkit.getPluginManager().getPlugins()) {
-            JsonObject obj = new JsonObject();
-            obj.addProperty("name", p.getName());
-            obj.addProperty("version", p.getDescription().getVersion());
-            obj.addProperty("author", String.join(", ", p.getDescription().getAuthors()));
-            obj.addProperty("description", p.getDescription().getDescription());
-            obj.addProperty("enabled", p.isEnabled());
+            PluginInfoDto obj = new PluginInfoDto();
+            obj.setName(p.getName());
+            obj.setVersion(p.getDescription().getVersion());
+            obj.setAuthor(String.join(", ", p.getDescription().getAuthors()));
+            obj.setDescription(p.getDescription().getDescription());
+            obj.setEnabled(p.isEnabled());
             array.add(obj);
         }
         return array;

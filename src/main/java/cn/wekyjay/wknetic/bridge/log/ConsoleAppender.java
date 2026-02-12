@@ -29,7 +29,7 @@ public class ConsoleAppender extends AbstractAppender {
         // 构造你的数据包 (可以是 JSON 或自定义对象)
         // 建议通过你已有的 Netty EventLoop 异步发送，避免拖慢服务器
         // 做测试
-        log.info("ConsoleAppender received log: " + message + " | Level: " + level + " | Timestamp: " + timestamp);
+        // log.info("ConsoleAppender received log: " + message + " | Level: " + level + " | Timestamp: " + timestamp);
         
     }
 }

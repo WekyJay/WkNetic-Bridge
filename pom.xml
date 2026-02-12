@@ -20,51 +20,41 @@
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <release>${java.version}</release>
-                    <compilerArgs>
-                        <arg>-Xlint:deprecation</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>shade</goal></goals>
-                        <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <archive>
-                                <compress>true</compress>
-                                <recompressAddedJars>true</recompressAddedJars>
-                            </archive>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <!-- 排除签名文件 -->
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.cryptomorin.xseries</pattern>
-                                    <shadedPattern>cn.wekyjay.wknetic.bridge.libs.xseries</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.5.3</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+                <minimizeJar>false</minimizeJar>
+                
+                <relocations>
+                    <relocation>
+                        <pattern>com.cryptomorin.xseries</pattern>
+                        <shadedPattern>cn.wekyjay.wknetic.bridge.libs.xseries</shadedPattern>
+                    </relocation>
+                    <relocation>
+                        <pattern>cn.wekyjay.wknetic.api</pattern>
+                        <shadedPattern>cn.wekyjay.wknetic.bridge.libs.api</shadedPattern>
+                    </relocation>
+                </relocations>
+                
+                <filters>
+                    <filter>
+                        <artifact>*:*</artifact>
+                        <excludes>
+                            <exclude>META-INF/*.SF</exclude>
+                            <exclude>META-INF/*.DSA</exclude>
+                            <exclude>META-INF/*.RSA</exclude>
+                        </excludes>
+                    </filter>
+                </filters>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
         </plugins>
         <resources>
             <resource>
@@ -92,10 +82,11 @@
             <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!-- WkNetic API -->
         <dependency>
             <groupId>cn.wekyjay.wknetic</groupId>
             <artifactId>wknetic-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
         <!--  lombok  -->
         <dependency>
